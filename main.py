@@ -1,96 +1,127 @@
 import httplib
 import sys
 import json
+
+# Defining Global Variables
 global login 
-global count
+global attempts
 
+# Defaulting Global Variables
+login = False 	# Set the default value to False
+attempts = 3		# Number of allowable login attempts by user. 
 
-login = False
-count = 3
-
+# Verify that user is logged in before using system. 
 def checkLogin():
-	global count
+	global attempts
 	global login 
 
-	if login == False:
+	# If the user is logged in, navigate to menu options
+	if login:
+		menu()
+
+	# If the user is not logged in, display appropriate choices. 
+	else: 
+		# Display Welcome Message
 		print("\n#########################################################################")
 		print("\tWelcome to the Trade Net and Financial Services System!")
 		print("#########################################################################\n")
 
 		choice = str(raw_input("Please enter (L) to Login | (C) to Create an account | (E) to Exit: ")).lower()
 		
-		if choice == 'l':
+		# If user has exceeded maximum number of attempts, navigate to Account Creation menu.
+		if attempts == 0:
+			print("ERROR: You have exceeded the maximum number of login attempts.")
+			createAccount()
+
+
+		# If login is chosen, verify that email and password are valid, and stored in the database
+		elif choice == 'l' and login == False:
 			print(" \nPlease log into your account.")
 			print("******************************")
 			email = str(raw_input(" EMAIL:  "))
 			password = str(raw_input(" PASSWORD:  "))
 
-			if checkCred(email, password) and count > 0:
-				login = True
+			# Check user inputted values
+			checkCred(email, password)
 
-			else: 
-				count = count - 1
-				print("\n\t##########################################")
-				print("\tERROR: Must be logged in to use this system.")
-				print("\t############################################\n")
-
-				if (count == 0):
-					print("You have exceeded the maximum number of login attempts.")
-					createAccount()
-
-				else:
-					return
-
+		# If user enters 'c', navigate to Account Creation menu
 		elif choice == 'c' and login == False:
 			createAccount()
 
+		# If user enters 'e', exit the system
 		elif choice == 'e':
-			exit_sys()
+			sys_exit()
 
+		# Display invalid input message
 		else:
-			comm_err()
+			command_err()
 
-	elif login == True:
-		menu()
-
+# Check the user's credentials
 def checkCred(email, password):
 	global login
-	if email == 'test' and password == 'test':
-		login = True
-		return True
-	
-	else:
-		login = False
-		return False
+	global attempts
 
+	# Verify legitimate email using MailboxLayer API
+	# Verify for legitimate password stored in database
+	# Verify maximum attempts haven't been exceeded. 
+	if MailboxLayerAPI(email) and password == 'test' and attempts > 0:
+		login = True
+		print("\n\t**************************************")
+		print("\t\tLOGIN SUCCESSFUL!")
+		print("\t**************************************\n")
+	
+	# If credential information invalid, return error
+	else:
+		attempts = attempts - 1
+		print("\n\t##########################################")
+		print("\t\tERROR: Invalid Credentials.")
+		print("\t############################################\n")
+
+# This function provides means for a user to create an account for the system
 def createAccount():
 	global login
-	email = str(raw_input("Please enter your desired email: "))
-	r_email = str(raw_input("Please re-enter your email: "))
+	email_count = 3
 
-	if email == r_email:
+	while (email_count > 0):
+		# Provide a valid email address for the system 
+		email = str(raw_input("Please enter your desired email: "))
+		r_email = str(raw_input("Please re-enter your email: "))
 
-		# This is where the API check should happen 
+		# Verify that email attempts match
+		if email == r_email:
 
-		password = str(raw_input("\nPlease enter your password: "))	
-		r_password = str(raw_input("Please re-enter your password: "))
+			# Now verify legitimate email using MailboxLayer API
+			if MailboxLayerAPI(email) == False:
+				print("ERROR: The email provided is invalid!")
+				print("Please provide a valid email address.\n")
 
-		if password == r_password:
-			print("SUCCESS! Thank you for creating an account with Trade Net!")
-			login = True
-			return
+			else:
+				# Allow user to enter new password 3 times
+				pass_count = 3
+				while (pass_count > 0):
+
+					# Obtain password for user's account
+					password = str(raw_input("\nPlease enter your password: "))	
+					r_password = str(raw_input("Please re-enter your password: "))
+
+					# Verify that the passwords match
+					if password == r_password:
+						print("SUCCESS! Thank you for creating an account with Trade Net!")
+						login = True
+						return
+
+					# Display error if passwords do not match.
+					else:
+						print("\nERROR: Sorry, those do not match.")
+						del password
+						del r_password
+						pass_count = pass_count - 1
 
 		else:
 			print("\nERROR: Sorry, those do not match.")
-			del password
-			del r_password
-			createAccount()
-
-	else:
-		print("\nERROR: Sorry, those do not match.")
-		del email
-		del r_email
-		createAccount()
+			del email
+			del r_email
+			email_count = email_count - 1
 
 def menu():
 	print("\n\tCURRENTLY AVAILABLE OPTIONS")
@@ -112,12 +143,30 @@ def menu():
 				return
 
 	elif choice == 'e':
-		exit_sys()
+		sys_exit()
 
 	else: 
-		comm_err()
+		command_err()
 
+def MailboxLayerAPI(email):
 
+	# Make request to MailboxLayer API using TCP connection 
+	connection = httplib.HTTPSConnection('apilayer.net', 443, timeout = 30)
+
+	access_key = "dec5f1a7aa81ccb685a6527b2fe48835"
+
+	connection.request('GET', '/api/check?access_key=' + access_key + "&email=" + email)
+
+	try:
+	  response = connection.getresponse()
+	  content = response.read()
+	  decoded_data = json.loads(content)
+	  connection.close()
+
+	except httplib.HTTPException, err:
+	  print(err)
+
+	return (decoded_data["format_valid"] and decoded_data["smtp_check"])
 
 def TradierAPI(sym): 
 
@@ -136,13 +185,13 @@ def TradierAPI(sym):
 	  content = response.read()
 	  decoded_data = json.loads(content)
 	  connection.close()
-	  parser(decoded_data, sym)
+	  parseTradier(decoded_data, sym)
 
 	except httplib.HTTPException, err:
 	  print(err)
 
 
-def parser(decoded_data, sym):
+def parseTradier(decoded_data, sym):
 	try:
 		print("Symbol: " + str(decoded_data["quotes"]["quote"]["symbol"]) + " | "
 		+ "Current Price: $" + str(decoded_data["quotes"]["quote"]["close"]) + " | "
@@ -151,6 +200,7 @@ def parser(decoded_data, sym):
 		+ "Volume: " + str(decoded_data["quotes"]["quote"]["volume"]))
 	except KeyError:
 		print("ERROR: " + sym + " is not a valid symbol.")
+
 
 # Function to give user option to return to menu or exit. 
 def return_to_menu(): 
@@ -165,14 +215,14 @@ def return_to_menu():
 	else:
 		exit_sys()	
 
-def exit_sys():
+def sys_exit():
 	print("\n********************************************************************")
 	print(" \tThank you for using Trade Net and Financial Services!")
 	print(" \tHave a good day!")
 	print("********************************************************************")		
 	sys.exit(1)
 
-def comm_err():
+def command_err():
 	print("\n\t####################################")
 	print("\tERROR: Please enter a valid command!")
 	print("\t####################################\n")
