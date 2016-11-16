@@ -6,7 +6,6 @@ def TwitterAPI(sym):
 	try: 
 		from tweepy import OAuthHandler
 		from tweepy import API
-		from tweepy import Cursor
 
 	# If module is not installed, instruct user on how to install and return to main menu. 
 	except ImportError, err:
@@ -45,7 +44,7 @@ def TwitterAPI(sym):
 				print("Posted: " + str(tweets[i].created_at))
 				print("Twitter User: " + str(tweets[i].user.screen_name))
 			except UnicodeEncodeError:
-				print("ERROR: Unable to properly encode this tweet.")
+				print("Error: Unable to encode that tweet.")
 
 			print("\n")
 

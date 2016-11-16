@@ -95,14 +95,15 @@ def menu():
 	print("\n\tCURRENTLY AVAILABLE OPTIONS")
 	print("********************************************")
 	if sym_provided:
-		print("Change Symbol (p) | Tradier API (tr) | Twitter API (tw) | NYTimes API (n) | Exit the Program (e)\n")
+		print("Current Symbol: " + sym)
+		print("Change Symbol (s) | Tradier API (tr) | Twitter API (tw) | NYTimes API (n) | Exit the Program (e)\n")
 
 	else: 
-		print("Provide a Symbol (p) | Exit the Program (e)\n")
+		print("Provide a Symbol (s) | Exit the Program (e)\n")
 	
 	choice = str(raw_input("Please enter your choice: ")).lower()
 
-	if choice == 'p':
+	if choice == 's':
 		sym = str(raw_input("Please provide a symbol: "))
 		sym_provided = True
 
