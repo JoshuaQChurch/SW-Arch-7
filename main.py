@@ -26,6 +26,7 @@ def checkLogin():
 		print("ERROR: You have exceeded the maximum number of login attempts.")
 		attempts = 3
 		if createAccount():
+			login = True
 			menu()
 
 	# If the user is logged in, navigate to menu options
@@ -55,6 +56,7 @@ def checkLogin():
 		# If user enters 'c', navigate to Account Creation menu
 		elif choice == 'c' and login == False:
 			if createAccount():
+				login = True
 				menu()
 
 		# If user enters 'e', exit the system
