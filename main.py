@@ -3,6 +3,7 @@ from Tradier import *
 from Mailboxlayer import *
 from NYTimes import *
 from CreateAccount import * 
+from Twitter import *
 
 # Defining Global Variables
 global login 
@@ -20,6 +21,13 @@ def checkLogin():
 	global attempts
 	global login 
 
+	# If user has exceeded maximum number of attempts, navigate to Account Creation menu.
+	if attempts == 0:
+		print("ERROR: You have exceeded the maximum number of login attempts.")
+		attempts = 3
+		if createAccount():
+			menu()
+
 	# If the user is logged in, navigate to menu options
 	if login:
 		menu()
@@ -31,16 +39,11 @@ def checkLogin():
 		print("\tWelcome to the Trade Net and Financial Services System!")
 		print("#########################################################################\n")
 
-		choice = str(raw_input("Please enter (L) to Login | (C) to Create an account | (E) to Exit: ")).lower()
+		choice = str(raw_input("Please enter (l) to Login | (c) to Create an account | (e) to Exit: ")).lower()
 		
-		# If user has exceeded maximum number of attempts, navigate to Account Creation menu.
-		if attempts == 0:
-			print("ERROR: You have exceeded the maximum number of login attempts.")
-			createAccount()
-
 
 		# If login is chosen, verify that email and password are valid, and stored in the database
-		elif choice == 'l' and login == False:
+		if choice == 'l' and login == False:
 			print(" \nPlease log into your account.")
 			print("******************************")
 			email = str(raw_input(" EMAIL:  "))
@@ -51,7 +54,8 @@ def checkLogin():
 
 		# If user enters 'c', navigate to Account Creation menu
 		elif choice == 'c' and login == False:
-			createAccount()
+			if createAccount():
+				menu()
 
 		# If user enters 'e', exit the system
 		elif choice == 'e':
@@ -69,7 +73,7 @@ def checkCred(email, password):
 	# Verify legitimate email using MailboxLayer API
 	# Verify for legitimate password stored in database
 	# Verify maximum attempts haven't been exceeded. 
-	if MailboxLayerAPI(email) and password == 'test' and attempts > 0:
+	if email == 'test' and password == 'test' and attempts > 0:
 		login = True
 		print("\n\t**************************************")
 		print("\t\tLOGIN SUCCESSFUL!")
@@ -111,14 +115,14 @@ def menu():
 
 	elif choice == 'tw':
 		if sym_provided:
-			print("Sorry, that option is currently under development.")
+			TwitterAPI(sym)
 
 		else:
 			sym_err()
 
 	elif choice == 'n':
 		if sym_provided:
-			NYTimes(sym)
+			NYTimesAPI(sym)
 
 		else:
 			sym_err()
@@ -148,6 +152,7 @@ def sym_err():
 	print("\n\t####################################")
 	print("\tERROR: Must provide a Symbol!")
 	print("\t####################################\n")
+
 # Loop until user exits. 
 while (1):
 	checkLogin()
