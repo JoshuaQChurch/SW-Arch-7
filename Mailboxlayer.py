@@ -1,7 +1,7 @@
 import httplib
 import json
 
-# Check the validity of the email address using MailboyLayer API
+# Check the validity of the email address using MailboxLayer API
 def MailboxLayerAPI(email):
 
 	# Make request to MailboxLayer API using TCP connection 
