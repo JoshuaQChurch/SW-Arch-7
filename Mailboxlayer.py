@@ -2,7 +2,7 @@ import httplib
 import json
 
 # Check the validity of the email address using MailboxLayer API
-def MailboxLayerAPI(email):
+def MailboxlayerAPI(email):
 
 	# Make request to MailboxLayer API using TCP connection 
 	connection = httplib.HTTPSConnection('apilayer.net', 443, timeout = 30)
