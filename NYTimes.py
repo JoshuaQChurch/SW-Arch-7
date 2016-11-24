@@ -30,22 +30,34 @@ def parseData(decoded_data):
 			# Handles encoding issues.
 			try: 
 				if (str(decoded_data["response"]["docs"][i]["snippet"].encode('utf-8')) != ''):
-					print("Story Snippet: " + str(decoded_data["response"]["docs"][i]["snippet"].encode('utf-8')))
+					print("[Story Snippet]")
+					print("----------------------")
+					print(str(decoded_data["response"]["docs"][i]["snippet"].encode('utf-8')) + "\n")
 
 				elif (str(decoded_data["response"]["docs"][i]["snippet"].encode('utf-8')) == ''):
-					print("Story Snippet is currently unavailable.")
+					print("[Story Snippet]")
+					print("----------------------")
+					print("CURRENTLY UNAVAILABLE")
 
 				if (str(decoded_data["response"]["docs"][i]["web_url"].encode('utf-8')) != ''):
-					print("URL: " + str(decoded_data["response"]["docs"][i]["web_url"].encode('utf-8')))
+					print("[URL]")
+					print("----------------------")
+					print(str(decoded_data["response"]["docs"][i]["web_url"].encode('utf-8')) + "\n")
 				
 				elif (str(decoded_data["response"]["docs"][i]["web_url"].encode('utf-8')) == ''):
-					print("URL is currently unavailable.")
+					print("[URL]")
+					print("----------------------")
+					print("CURRENTLY UNAVAILABLE")
 
 				if (str(decoded_data["response"]["docs"][i]["pub_date"].encode('utf-8')) != ''):
-					print("Published Time: " + str(decoded_data["response"]["docs"][i]["pub_date"].encode('utf-8')))
+					print("[Published Time]")
+					print("----------------------")
+					print(str(decoded_data["response"]["docs"][i]["pub_date"].encode('utf-8')) + "\n")
 
 				elif (str(decoded_data["response"]["docs"][i]["pub_date"].encode('utf-8')) == ''):
-					print("Published Time is currently unavailable.")
+					print("[Published Time]")
+					print("----------------------")
+					print("CURRENTLY UNAVAILABLE")
 				
 				print("\n\n")
 

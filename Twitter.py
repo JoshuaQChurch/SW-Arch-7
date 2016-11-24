@@ -39,14 +39,13 @@ def TwitterAPI(sym):
 	try: 
 		for i in range(10):
 			try: 
-				print("********* Tweet #" + str(i + 1) + " **********") 
-				print("Tweet: " + str(tweets[i].text))
-				print("Posted: " + str(tweets[i].created_at))
-				print("Twitter User: " + str(tweets[i].user.screen_name))
+				print("\n > Twitter User: " + str(tweets[i].user.screen_name)).encode("utf-8") 
+				print("\t | Tweet: " + str(tweets[i].text)).encode("utf-8")
+				print("\t | Posted: " + str(tweets[i].created_at)).encode("utf-8")
+				
 			except UnicodeEncodeError:
-				print("Error: Unable to encode that tweet.")
+				pass
 
-			print("\n")
 
 	# If 10 Tweets are currently unavailable, return to menu
 	except IndexError:
