@@ -23,7 +23,7 @@ document.getElementById('symbol-search').onclick= function() {
 			+ "<th><a href='http://www.investopedia.com/terms/v/volume.asp?lgl=no-infinite' target='_blank'>Volume</a></th>"
 			+ "</tr>"
 			+ "<tr>"
-			+ "<td " + ((data.quotes.quote.change > 0 && data.quotes.quote.change != 0) ? "style='color: green'>+":"style='color: red'>-") + data.quotes.quote.change + "</td>"
+			+ "<td " + ((data.quotes.quote.change > 0 && data.quotes.quote.change != 0) ? "style='color: green'>+":"style='color: red'>") + data.quotes.quote.change + "</td>"
 			+ "<td class='" + ((data.quotes.quote.change_percentage > 0 && data.quotes.quote.change_percentage != 0) ? "glyphicon glyphicon-triangle-top' style='color: green'> ":"glyphicon glyphicon-triangle-bottom' style='color: red'>") + data.quotes.quote.change_percentage + "%</td>"
 			+ "<td>" + data.quotes.quote.volume + "</td>"
 			+ "</tr>"
@@ -32,13 +32,18 @@ document.getElementById('symbol-search').onclick= function() {
             + "<button class='btn btn-primary' id='purchase' style='width:40%; display:inline;'>Purchase</button>";
             
        
-            
+            // XML request to obtain 'tweet' object from Model/API/REST-Twitter
 			var xhr = new XMLHttpRequest();
 			xhr.onreadystatechange = function () {
+
+				// If successful, store parsed data into twitter div
 				if (xhr.readyState === 4 && xhr.status === 200) {
+					
+					// Stores returned 'tweet' object in variable
 					var tweet = JSON.parse(xhr.responseText);
 					var html = "<img src='../View/src/images/twitter.jpg' alt='<h2>Twitter</h2>' style='width:100%'><hr style='border-top: 1px solid #000000'>"; 
-					console.log(tweet);
+					
+					// Displays all 'english-languaged' tweets (assumming non-null values)
 					for (var i = 0; i < tweet.statuses.length; i++) {
 						if (tweet.statuses[i].lang == "en") {
 							if (tweet.statuses[i].user.screen_name) {
@@ -52,11 +57,11 @@ document.getElementById('symbol-search').onclick= function() {
 								html += "<b>Tweet:</b> " + tweet.statuses[i].text + "<br>";
 							}
 
-							
 							html += "<hr style='border-top: 1px solid #000000'>";
 						}
 					}	
 
+				// If non-sucessful, log the error
 				} else {
 			
 					if(xhr.readyState === 4 && xhr.status !== 200){
@@ -64,24 +69,24 @@ document.getElementById('symbol-search').onclick= function() {
 					}
 				}
 				
-				console.log(html);
+				// Store HTML elements into twitter div
 				document.getElementById('twitter').innerHTML = html;
 			};
 
-			
+			// Execute the XML request
 			xhr.open("POST", "../Model/API/REST-Twitter.php?symbol=" + document.getElementById('symbol').value.toUpperCase(), true);
 			xhr.send();
 			
 			
 		
-		
-		
-		
+			// Function to handle purchase functionality 
 		   	document.getElementById('purchase').onclick = function() {
 
 			   	var xhr = new XMLHttpRequest();
 				xhr.onreadystatechange = function () {
 			        if (xhr.readyState === 4 && xhr.status === 200) {
+
+			        	// Alert self-made responses and return back to menu screen
 			           	alert(JSON.parse(xhr.responseText).response);
 			            window.location.href = "menu.php";
 
@@ -91,24 +96,26 @@ document.getElementById('symbol-search').onclick= function() {
 			    			console.log('This is an error');
 			                }
 			        }
-
 			    };
 
+			    // Post and execute commands through the update_database controller class
 		    	var d = new Date();
 				xhr.open("POST", "../Controller/update_database.php?type=Purchased&company=" + data.quotes.quote.description + "&symbol=" + data.quotes.quote.symbol + "&price=" + data.quotes.quote.prevclose + "&date=" + d.toDateString() + "&time=" + d.toTimeString() + "&stock=" + document.getElementById('purchase_amount').value, true);
 				xhr.send();
 		   	}			
 		
+		// If the user provides an invalid symbol, alert and return
 		} else {
 			document.getElementById('symbol-container').style.display = "none";
 			alert("Please provide a valid symbol.");
 			document.getElementById('tradier').innerHTML = "Sorry, that is an invalid symbol.";
 		}
-
+		// Slight error checking
 	}, function(){
 		console.log("Error");
 	});
 
+	// Function to handle New York Times News functionality
 	NYTimesAPI(document.getElementById('symbol').value.toUpperCase(), function(data){
 
 		var news = ""; 
@@ -134,7 +141,7 @@ document.getElementById('symbol-search').onclick= function() {
 			
 		}
 
-		document.getElementById('nytimes').innerHTML = "<img src='../View/src/images/nytimes-logo.png' alt='<h2>New York Times News</h2>' style='width:95%;'><br>" + news;
+		document.getElementById('nytimes').innerHTML = "<img src='../View/src/images/nytimes-logo.png' alt='<h2>New York Times News</h2>' style='width:95%;'><hr style='border-top: 1px solid #000000'>" + news;
 		
 	}, function(){
 		console.log("Error");
