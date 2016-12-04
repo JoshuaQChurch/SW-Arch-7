@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Trade Net Brokerage System
+        </title>
+        <link rel="stylesheet" type="text/css" href="src/css/index_style.css" media="screen" />
+    </head>
+
+    <body>
+	    <div id = "welcome">
+	        <h1>Welcome to the Trade Net Brokerage System!</h1>
+	        <h2>Choose from the following options below.</h2>
+
+	        <button id='btn1' onclick="document.getElementById('login').style.display='block'" style="width:auto;">Login</button>
+	        <button id='btn2' onclick="document.getElementById('register').style.display='block'" style="width:auto;">Register</button>
+
+	    </div>
+
+        <div id="login" class="modal">
+          
+          <form class="modal-content animate" method="POST" action="../Controller/check_login.php">
+            <div class="popup">
+              <span onclick="document.getElementById('login').style.display='none'" class="close" title="Close Modal">&times;</span>
+              <h2>Please enter your credentials</h2>
+            </div>
+
+            <div class="container">
+              <label><b>Email</b></label>
+              <input type="text" placeholder="Enter Email" name="email" required>
+
+              <label><b>Password</b></label>
+              <input type="password" placeholder="Enter Password" name="password" required>
+                
+              <button type="submit">Login</button>
+            </div>
+
+            <div class="container" style="background-color:#f1f1f1">
+              <button type="button" onclick="document.getElementById('login').style.display='none'" class="cancelbtn">Cancel</button>
+            </div>
+          </form>
+        </div>
+
+
+        <div id="register" class="modal">  
+          <form class="modal-content animate" method="POST" action="../Controller/register.php">
+            <div class="popup">
+              <span onclick="document.getElementById('register').style.display='none'" class="close" title="Close Modal">&times;</span>
+              <h2>Account Registration Page</h2>
+            </div>
+
+            <div class="container">
+              <label><b>First Name</b></label>
+              <input type="text" placeholder="Enter Password" name="first" required>
+
+              <label><b>Last Name</b></label>
+              <input type="text" placeholder="Enter Password" name="last" required>
+              
+              <label><b>Email</b></label>
+              <input type="text" placeholder="Enter Username" name="email" required>
+
+              <label><b>Password</b></label>
+              <input type="password" placeholder="Enter Password" name="password" required>
+
+              <button type="submit">Create Account</button>
+            
+            </div>
+
+            <div class="container" style="background-color:#f1f1f1">
+              <button type="button" onclick="document.getElementById('register').style.display='none'" class="cancelbtn">Cancel</button>
+            </div>
+          </form>
+        </div>
+
+
+
+    </body>
+
+    <!--- Scripts -->
+    <script>
+        // Get the modal
+        var modal = document.getElementById('login');
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+</html>
