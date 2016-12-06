@@ -59,7 +59,7 @@ EOF;
 	if (@$db->exec($exists)) {
 
 		if (doesNotExist($email, $db)) {
-			include ('Mailboxlayer.php');
+			include ('../Model/API/REST-Mailboxlayer.php');
 			if (@Mailboxlayer($email)) {
 				addEntry($db, $sql, $first, $last, $email, $password, $balance);
 			} else {
